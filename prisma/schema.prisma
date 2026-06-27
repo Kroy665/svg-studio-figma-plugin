@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Categories table
+model Category {
+  id           Int       @id @default(autoincrement())
+  name         String    @unique
+  displayName  String    @map("display_name")
+  description  String?
+  sortOrder    Int       @default(0) @map("sort_order")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  shapes       Shape[]
+
+  @@map("categories")
+}
+
+// Shapes table
+model Shape {
+  id          Int            @id @default(autoincrement())
+  name        String
+  categoryId  Int            @map("category_id")
+  svgContent  String         @map("svg_content")
+  width       Int?
+  height      Int?
+  tags        String?        // JSON string
+  isCustom    Boolean        @default(false) @map("is_custom")
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+  category    Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  history     ShapeHistory[]
+
+  @@index([categoryId])
+  @@index([name])
+  @@index([isCustom])
+  @@map("shapes")
+}
+
+// Shape history table
+model ShapeHistory {
+  id        Int      @id @default(autoincrement())
+  shapeId   Int      @map("shape_id")
+  action    String
+  userNote  String?  @map("user_note")
+  timestamp DateTime @default(now())
+  shape     Shape    @relation(fields: [shapeId], references: [id], onDelete: Cascade)
+
+  @@map("shape_history")
+}
+
+// Settings table
+model Setting {
+  key         String   @id
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("settings")
+}
