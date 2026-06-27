@@ -8,6 +8,7 @@
     "figma"
   ],
   "networkAccess": {
-    "allowedDomains": ["none"]
+    "allowedDomains": ["http://localhost:3456"],
+    "reasoning": "Plugin connects to local backend API server running on localhost:3456 for database-driven SVG management"
   }
 }

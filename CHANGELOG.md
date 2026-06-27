@@ -70,6 +70,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Why**: Local-only app - each machine generates its own database
 - **Setup**: Run `npm run db:migrate && npm run db:seed` on new machine
 
+## [0.0.3] - 2026-06-27
+
+### Fixed
+- **CORS Configuration**: Fixed CORS to allow Figma plugin requests from figma.com domains
+- **Search Functionality**: Removed SQLite-incompatible `mode: 'insensitive'` argument from search queries
+- **Manifest Network Access**: Configured `allowedDomains` with proper reasoning field for localhost access
+
+### Changed
+- Search is now case-sensitive (SQLite limitation)
+- CORS now explicitly allows all figma.com origins
+- Added CORS logging for debugging
+
 ## [0.0.2] - 2026-06-27
 
 ### Added

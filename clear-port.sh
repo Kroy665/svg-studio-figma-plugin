@@ -1,0 +1,1 @@
+lsof -ti:3456 | xargs kill -9 2>/dev/null; sleep 1; echo "Port 3456 cleared"

@@ -15,9 +15,10 @@ router.get('/', async (req, res) => {
     let where = {};
 
     if (search) {
+      // SQLite doesn't support mode: 'insensitive', so use COLLATE NOCASE or convert to lowercase
       where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { tags: { contains: search, mode: 'insensitive' } }
+        { name: { contains: search } },
+        { tags: { contains: search } }
       ];
     }
 
