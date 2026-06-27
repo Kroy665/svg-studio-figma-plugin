@@ -1,9 +1,9 @@
-# SVG Studio v0.0.1 - Figma Plugin with Database
+# SVG Studio v0.0.2 - Figma Plugin with Database
 
 Production-grade Figma plugin for managing and inserting SVG assets with **Prisma ORM** and **SQLite database**.
 
-> **Version**: 0.0.1
-> **Status**: Beta - Backend Complete, UI Integration In Progress
+> **Version**: 0.0.2
+> **Status**: Beta - Full API Integration Complete
 
 ## ✨ Features
 
@@ -11,11 +11,14 @@ Production-grade Figma plugin for managing and inserting SVG assets with **Prism
 - 📦 **80 Pre-loaded SVG Assets** (waves, blobs, shapes, dividers, frames, borders)
 - 🚀 **RESTful API** for shape management
 - ✅ **SVG Validation & Sanitization**
-- 📤 **Upload Custom SVGs** (coming soon in UI)
-- 🔍 **Search & Filter** shapes
-- 📊 **Category Management**
+- 📤 **Upload Custom SVGs** with drag-and-drop
+- 🔍 **Search & Filter** shapes in real-time
+- 📊 **Category Management** with dynamic counts
+- 🗑️ **Delete Custom Shapes** directly from UI
 - 📝 **History Tracking** for all changes
 - 🔒 **Production-ready** error handling and logging
+- 💫 **Loading States** and user feedback
+- 🔌 **Backend Status Indicator** in UI
 
 ## 📁 Project Structure
 
@@ -207,7 +210,7 @@ ALLOWED_ORIGINS=http://localhost:*,https://www.figma.com
 LOG_LEVEL=info
 ```
 
-## 🚧 Version 0.0.1 Status
+## 🚧 Version 0.0.2 Status
 
 ### ✅ Completed
 - [x] SQLite database with Prisma ORM
@@ -221,21 +224,21 @@ LOG_LEVEL=info
 - [x] Error handling and logging
 - [x] Seed script for initial data
 - [x] API documentation
+- [x] **UI loads shapes from API** ✨ NEW
+- [x] **Upload functionality with drag-and-drop** ✨ NEW
+- [x] **Delete custom shapes from UI** ✨ NEW
+- [x] **Real-time category counts** ✨ NEW
+- [x] **Loading states and backend status** ✨ NEW
+- [x] **Error handling in UI** ✨ NEW
 
-### 🚧 In Progress (v0.0.2)
-- [ ] Update UI to load shapes from API
-- [ ] Add upload functionality in UI
-- [ ] Add delete/edit buttons in UI
-- [ ] Real-time shape preview
-- [ ] Category management UI
-
-### 📋 Planned (v0.1.0)
+### 📋 Planned (v0.0.3)
+- [ ] Edit shape functionality
+- [ ] Bulk operations
+- [ ] Shape favorites/collections
 - [ ] Backup/restore utilities
 - [ ] Export shapes to ZIP
 - [ ] Import from external sources
-- [ ] Shape favorites/collections
 - [ ] Usage analytics
-- [ ] Dark/light theme toggle
 
 ## 🐛 Troubleshooting
 
@@ -288,13 +291,20 @@ MIT
 
 ## 📦 Version History
 
-### v0.0.1 (Current) - Initial Release
+### v0.0.2 (Current) - Full Integration
+- ✅ Complete API integration in UI
+- ✅ SVG upload with drag-and-drop
+- ✅ Shape management (delete custom shapes)
+- ✅ Real-time category counts
+- ✅ Loading states and backend status
+- ✅ Production-ready user experience
+
+### v0.0.1 - Initial Release
 - ✅ Backend infrastructure complete
 - ✅ Database with Prisma ORM
 - ✅ RESTful API
 - ✅ 80 pre-loaded SVG assets
 - ✅ Full CRUD operations
-- 🚧 UI integration pending
 
 ---
 

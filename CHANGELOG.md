@@ -70,17 +70,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Why**: Local-only app - each machine generates its own database
 - **Setup**: Run `npm run db:migrate && npm run db:seed` on new machine
 
-## [Unreleased] - Next Version (0.0.2)
+## [0.0.2] - 2026-06-27
+
+### Added
+- **Full API Integration**: UI now loads all shapes dynamically from backend API
+- **SVG Upload Functionality**: Complete upload system with drag-and-drop support
+  - Drag-and-drop area for easy file upload
+  - File validation (SVG only, max 512KB)
+  - Real-time SVG preview before saving
+  - Category selection dropdown
+  - Tags input for better organization
+  - Auto-fills shape name from filename
+- **Shape Management**: Delete custom shapes directly from UI
+- **Loading States**: Professional loading spinners and feedback
+- **Real-time Category Counts**: Category counts update dynamically from database
+- **Backend Status Indicator**: Visual indicator showing backend connection status
+- **Error Handling**: Graceful error messages when backend is offline
+- **Empty State**: User-friendly message when no shapes match filters
+
+### Changed
+- UI no longer uses hardcoded ASSETS array
+- All shape data now comes from SQLite database via API
+- Categories are loaded dynamically from backend
+- Search and filtering now use API endpoints
+- Backend connection check on plugin load
+
+### Improved
+- Better error messages for offline backend
+- Toast notifications for user actions
+- Smooth transitions and loading states
+- Professional modal design for uploads
+
+### Technical Details
+- API Base URL: `http://localhost:3456`
+- Endpoints used: `/health`, `/api/categories`, `/api/shapes`
+- Upload endpoint: `POST /api/shapes`
+- Delete endpoint: `DELETE /api/shapes/:id`
+
+## [Unreleased] - Next Version (0.0.3)
 
 ### Planned
-- Integrate UI with backend API
-- Add SVG upload functionality in plugin UI
-- Real-time shape preview
-- Shape management UI (edit, delete, favorite)
-- Category filtering in UI
-- Search functionality in UI
-- Error handling in UI
-- Loading states and feedback
+- Edit shape functionality
+- Bulk operations (delete multiple shapes)
+- Export shapes collection to ZIP
+- Import shapes from files/URLs
+- Shape favorites and collections
+- Usage statistics and analytics
 
 ## Future Roadmap
 

@@ -1,6 +1,6 @@
 {
   "name": "svg-studio-plugin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Production-grade Figma plugin for managing and inserting SVG assets with Prisma ORM and SQLite database",
   "main": "backend/server.js",
   "scripts": {
