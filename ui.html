@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>SVG Studio</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', Roboto, sans-serif;
+      background: #1e1e1e;
+      color: #e5e5e5;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      font-size: 12px
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-bottom: 1px solid #333;
+      background: #242424;
+      flex-shrink: 0
+    }
+
+    .logo {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 7px
+    }
+
+    .logo-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      flex-shrink: 0
+    }
+
+    .search-wrap {
+      flex: 1;
+      position: relative
+    }
+
+    .search-input {
+      width: 100%;
+      background: #2d2d2d;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 7px 12px 7px 32px;
+      color: #e5e5e5;
+      font-size: 12px;
+      outline: none;
+      transition: border-color .15s
+    }
+
+    .search-input:focus {
+      border-color: #18a0fb
+    }
+
+    .search-input::placeholder {
+      color: #666
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #777;
+      pointer-events: none
+    }
+
+    .main {
+      display: flex;
+      flex: 1;
+      overflow: hidden
+    }
+
+    .sidebar {
+      width: 128px;
+      min-width: 128px;
+      border-right: 1px solid #333;
+      overflow-y: auto;
+      padding: 6px 0;
+      background: #1e1e1e;
+      flex-shrink: 0
+    }
+
+    .cat-item {
+      padding: 7px 10px;
+      font-size: 11.5px;
+      cursor: pointer;
+      color: #aaa;
+      border-radius: 5px;
+      margin: 1px 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
+      transition: all .1s;
+      user-select: none
+    }
+
+    .cat-item:hover {
+      background: #2a2a2a;
+      color: #e5e5e5
+    }
+
+    .cat-item.active {
+      background: #18a0fb18;
+      color: #18a0fb;
+      font-weight: 600
+    }
+
+    .cat-label {
+      flex: 1
+    }
+
+    .cat-count {
+      font-size: 9.5px;
+      color: #555;
+      background: #2a2a2a;
+      border-radius: 8px;
+      padding: 1px 5px;
+      min-width: 18px;
+      text-align: center
+    }
+
+    .cat-item.active .cat-count {
+      background: #18a0fb22;
+      color: #18a0fb99
+    }
+
+    .grid-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
+      gap: 8px
+    }
+
+    .card {
+      background: #252525;
+      border-radius: 8px;
+      padding: 8px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color .12s, background .12s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px
+    }
+
+    .card:hover {
+      border-color: #18a0fb55;
+      background: #2c2c2c
+    }
+
+    .card-preview {
+      width: 70px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      background: #1a1a1a;
+      overflow: hidden;
+      flex-shrink: 0
+    }
+
+    .card-preview svg {
+      width: 100%;
+      height: 100%;
+      display: block
+    }
+
+    .card-name {
+      font-size: 9.5px;
+      color: #aaa;
+      text-align: center;
+      line-height: 1.3;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .card-insert {
+      width: 100%;
+      padding: 4px 0;
+      background: #18a0fb;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background .1s
+    }
+
+    .card-insert:hover {
+      background: #0d8de0
+    }
+
+    .card-insert:active {
+      background: #0a7ac8
+    }
+
+    .card-insert:disabled {
+      background: #444;
+      cursor: default
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #555;
+      font-size: 12px;
+      padding: 60px 20px
+    }
+
+    .footer {
+      padding: 6px 14px;
+      border-top: 1px solid #2a2a2a;
+      font-size: 10.5px;
+      color: #555;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1e1e1e;
+      flex-shrink: 0
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      background: #2d2d2d;
+      border: 1px solid #444;
+      color: #e5e5e5;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 11px;
+      opacity: 0;
+      transition: all .2s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 999
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0)
+    }
+
+    .toast.error {
+      border-color: #ef4444;
+      color: #fca5a5
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #3a3a3a;
+      border-radius: 2px
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      SVG Studio (v0.0.1)
+    </div>
+    <div class="search-wrap">
+      <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2.5">
+        <circle cx="11" cy="11" r="8" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
+      <input class="search-input" id="search" type="text" placeholder="Search 80 SVG assets...">
+    </div>
+  </div>
+  <div class="main">
+    <nav class="sidebar" id="sidebar">
+      <div class="cat-item active" data-cat="all"><span class="cat-label">All</span><span class="cat-count">80</span>
+      </div>
+      <div class="cat-item" data-cat="waves"><span class="cat-label">Waves</span><span class="cat-count">10</span></div>
+      <div class="cat-item" data-cat="blobs"><span class="cat-label">Blobs</span><span class="cat-count">10</span></div>
+      <div class="cat-item" data-cat="shapes"><span class="cat-label">Shapes</span><span class="cat-count">40</span>
+      </div>
+      <div class="cat-item" data-cat="dividers"><span class="cat-label">Dividers</span><span class="cat-count">8</span>
+      </div>
+      <div class="cat-item" data-cat="frames"><span class="cat-label">Frames</span><span class="cat-count">6</span>
+      </div>
+      <div class="cat-item" data-cat="borders"><span class="cat-label">Borders</span><span class="cat-count">6</span>
+      </div>
+    </nav>
+    <div class="grid-area">
+      <div class="grid" id="grid"></div>
+      <div class="empty-state" id="empty" style="display:none">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+          style="opacity:.3">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <span>No assets found</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span id="count-label">80 assets</span>
+    <span>SVG Studio v1.0</span>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script>
+    var ASSETS = [
+      // Waves (10)
+      { id: 'w1', name: 'Soft Wave', cat: 'waves', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300"><path d="M0,150 C200,50 600,250 800,150 L800,300 L0,300 Z" fill="#4F46E5"/></svg>' },
+      { id: 'w2', name: 'Ocean Wave', cat: 'waves', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300"><path d="M0,150 C133,90 267,210 400,150 C533,90 667,210 800,150 L800,300 L0,300 Z" fill="#0EA5E9"/></svg>' },
+      { id: 'w3', name: 'Layered Wave', cat: 'waves', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300"><path d="M0,180 C200,110 600,250 800,180 L800,300 L0,300 Z" fill="#818CF8" opacity="0.55"/><path d="M0,210 C200,140 600,280 800,210 L800,300 L0,300 Z" fill="#6366F1" opacity="0.75"/></svg>' },
+      { id: 'w4', name: 'Sharp Wave', cat: 'waves', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300"><path d="M0,150 L200,80 L400,180 L600,100 L800,160 L800,300 L0,300 Z" fill="#EC4899"/></svg>' },
+      { id: 'w5', name: 'Triple Wave', cat: 'waves', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300"><path d="M0,180 Q200,120 400,180 T800,180 L800,300 L0,300 Z" fill="#8B5CF6"/></svg>' },
+      { id: 'w6', name: 'Curve Wave', cat: 'waves', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300"><path d="M0,200 Q400,100 800,200 L800,300 L0,300 Z" fill="#14B8A6"/></svg>' },
+      { id: 'w7', name: 'Smooth Wave', cat: 'waves', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300"><path d="M0,160 C100,100 200,220 300,160 S500,100 600,160 S700,220 800,160 L800,300 L0,300 Z" fill="#F59E0B"/></svg>' },
+      { id: 'w8', name: 'Gentle Wave', cat: 'waves', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300"><path d="M0,170 Q200,130 400,170 T800,170 L800,300 L0,300 Z" fill="#06B6D4"/></svg>' },
+      { id: 'w9', name: 'Double Wave', cat: 'waves', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300"><path d="M0,150 C200,80 400,220 600,150 C650,130 750,170 800,150 L800,300 L0,300 Z" fill="#10B981"/></svg>' },
+      { id: 'w10', name: 'Peak Wave', cat: 'waves', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300"><path d="M0,200 L100,140 L200,180 L300,120 L400,160 L500,110 L600,150 L700,130 L800,170 L800,300 L0,300 Z" fill="#EF4444"/></svg>' },
+
+      // Blobs (10)
+      { id: 'b1', name: 'Organic Blob', cat: 'blobs', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M100,20 C150,20 180,50 180,100 C180,150 150,180 100,180 C50,180 20,150 20,100 C20,50 50,20 100,20 Z" fill="#4F46E5"/></svg>' },
+      { id: 'b2', name: 'Soft Blob', cat: 'blobs', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M100,10 Q160,30 175,90 T140,170 Q100,190 60,170 T25,90 Q40,30 100,10 Z" fill="#EC4899"/></svg>' },
+      { id: 'b3', name: 'Fluid Blob', cat: 'blobs', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M100,15 C130,15 155,25 170,50 C185,75 190,105 175,135 C160,165 130,185 100,185 C70,185 40,165 25,135 C10,105 15,75 30,50 C45,25 70,15 100,15 Z" fill="#8B5CF6"/></svg>' },
+      { id: 'b4', name: 'Wave Blob', cat: 'blobs', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><ellipse cx="100" cy="100" rx="70" ry="85" fill="#14B8A6"/></svg>' },
+      { id: 'b5', name: 'Rounded Blob', cat: 'blobs', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="75" fill="#F59E0B"/></svg>' },
+      { id: 'b6', name: 'Abstract Blob', cat: 'blobs', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M100,20 Q150,40 160,90 Q170,140 120,170 Q70,200 40,150 Q10,100 50,60 Q90,20 100,20 Z" fill="#0EA5E9"/></svg>' },
+      { id: 'b7', name: 'Morph Blob', cat: 'blobs', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M100,25 C140,25 165,40 175,70 C185,100 180,130 160,155 C140,180 110,190 80,175 C50,160 30,130 30,95 C30,60 60,25 100,25 Z" fill="#10B981"/></svg>' },
+      { id: 'b8', name: 'Cloud Blob', cat: 'blobs', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M100,30 Q140,30 160,60 Q180,90 165,120 Q150,150 110,160 Q70,170 45,140 Q20,110 35,75 Q50,40 100,30 Z" fill="#06B6D4"/></svg>' },
+      { id: 'b9', name: 'Splash Blob', cat: 'blobs', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M100,20 C130,20 155,30 170,55 C185,80 185,110 170,135 C155,160 130,175 100,175 C70,175 45,160 30,135 C15,110 15,80 30,55 C45,30 70,20 100,20 Z" fill="#EF4444"/></svg>' },
+      { id: 'b10', name: 'Smooth Blob', cat: 'blobs', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M100,25 Q145,35 165,75 Q185,115 155,150 Q125,185 85,165 Q45,145 35,105 Q25,65 55,40 Q85,15 100,25 Z" fill="#A855F7"/></svg>' },
+
+      // Shapes (20)
+      { id: 's1', name: 'Circle', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" fill="#4F46E5"/></svg>' },
+      { id: 's2', name: 'Square', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="30" y="30" width="140" height="140" fill="#EC4899"/></svg>' },
+      { id: 's3', name: 'Triangle', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><polygon points="100,30 170,170 30,170" fill="#8B5CF6"/></svg>' },
+      { id: 's4', name: 'Pentagon', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><polygon points="100,30 175,90 145,165 55,165 25,90" fill="#14B8A6"/></svg>' },
+      { id: 's5', name: 'Hexagon', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><polygon points="100,20 170,60 170,140 100,180 30,140 30,60" fill="#F59E0B"/></svg>' },
+      { id: 's6', name: 'Star', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><polygon points="100,20 120,80 180,80 130,120 150,180 100,140 50,180 70,120 20,80 80,80" fill="#0EA5E9"/></svg>' },
+      { id: 's7', name: 'Diamond', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><polygon points="100,20 180,100 100,180 20,100" fill="#10B981"/></svg>' },
+      { id: 's8', name: 'Octagon', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><polygon points="70,20 130,20 180,70 180,130 130,180 70,180 20,130 20,70" fill="#06B6D4"/></svg>' },
+      { id: 's9', name: 'Rounded Square', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="30" y="30" width="140" height="140" rx="20" fill="#EF4444"/></svg>' },
+      { id: 's10', name: 'Ellipse', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><ellipse cx="100" cy="100" rx="85" ry="60" fill="#A855F7"/></svg>' },
+      { id: 's11', name: 'Pill', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="40" y="70" width="120" height="60" rx="30" fill="#4F46E5"/></svg>' },
+      { id: 's12', name: 'Arrow Right', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M20,80 L120,80 L120,50 L180,100 L120,150 L120,120 L20,120 Z" fill="#EC4899"/></svg>' },
+      { id: 's13', name: 'Arrow Up', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M80,180 L80,80 L50,80 L100,20 L150,80 L120,80 L120,180 Z" fill="#8B5CF6"/></svg>' },
+      { id: 's14', name: 'Chevron Right', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M60,30 L140,100 L60,170 L40,150 L100,100 L40,50 Z" fill="#14B8A6"/></svg>' },
+      { id: 's15', name: 'Heart', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M100,170 C100,170 20,120 20,70 C20,40 40,25 60,25 C80,25 95,35 100,50 C105,35 120,25 140,25 C160,25 180,40 180,70 C180,120 100,170 100,170 Z" fill="#EF4444"/></svg>' },
+      { id: 's16', name: 'Badge', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="30" y="60" width="140" height="80" rx="8" fill="#F59E0B"/></svg>' },
+      { id: 's17', name: 'Tag', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M20,60 L90,60 L120,100 L90,140 L20,140 Z" fill="#0EA5E9"/></svg>' },
+      { id: 's18', name: 'Ribbon', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M30,50 L170,50 L150,100 L170,150 L30,150 L50,100 Z" fill="#10B981"/></svg>' },
+      { id: 's19', name: 'Parallelogram', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M50,60 L150,60 L150,140 L50,140 L70,60 Z" fill="#06B6D4" transform="skewX(-15)"/></svg>' },
+      { id: 's20', name: 'Trapezoid', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M60,60 L140,60 L170,140 L30,140 Z" fill="#A855F7"/></svg>' },
+      { id: 's21', name: 'Cloud', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M60,100 C60,85 70,70 85,70 C85,55 100,45 115,45 C130,45 145,55 145,70 C160,70 170,85 170,100 C170,115 160,130 145,130 L75,130 C60,130 60,115 60,100 Z" fill="#4F46E5"/></svg>' },
+      { id: 's22', name: 'Speech Bubble', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M30,50 C30,40 40,30 50,30 L150,30 C160,30 170,40 170,50 L170,110 C170,120 160,130 150,130 L90,130 L70,160 L70,130 L50,130 C40,130 30,120 30,110 Z" fill="#EC4899"/></svg>' },
+      { id: 's23', name: 'Location Pin', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M100,20 C70,20 50,45 50,70 C50,105 100,160 100,160 C100,160 150,105 150,70 C150,45 130,20 100,20 Z M100,90 C88,90 78,80 78,68 C78,56 88,46 100,46 C112,46 122,56 122,68 C122,80 112,90 100,90 Z" fill="#8B5CF6"/></svg>' },
+      { id: 's24', name: 'Shield', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M100,20 L160,50 L160,100 C160,140 130,170 100,180 C70,170 40,140 40,100 L40,50 Z" fill="#14B8A6"/></svg>' },
+      { id: 's25', name: 'Bookmark', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M60,30 L140,30 L140,170 L100,140 L60,170 Z" fill="#F59E0B"/></svg>' },
+      { id: 's26', name: 'Home', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M100,30 L30,90 L30,170 L80,170 L80,120 L120,120 L120,170 L170,170 L170,90 Z" fill="#0EA5E9"/></svg>' },
+      { id: 's27', name: 'Notification', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M100,30 C90,30 80,40 80,50 L80,90 C80,90 50,100 50,130 L150,130 C150,100 120,90 120,90 L120,50 C120,40 110,30 100,30 Z M85,140 C85,150 92,160 100,160 C108,160 115,150 115,140 Z" fill="#10B981"/></svg>' },
+      { id: 's28', name: 'Envelope', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M20,50 L20,150 L180,150 L180,50 Z M20,50 L100,110 L180,50" fill="#06B6D4" stroke="#06B6D4" stroke-width="2" stroke-linejoin="round"/></svg>' },
+      { id: 's29', name: 'Lightning', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M120,20 L60,100 L90,100 L70,180 L140,90 L110,90 Z" fill="#EF4444"/></svg>' },
+      { id: 's30', name: 'Gear', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M100,60 C77,60 60,77 60,100 C60,123 77,140 100,140 C123,140 140,123 140,100 C140,77 123,60 100,60 Z M95,30 L105,30 L108,45 L92,45 Z M95,170 L105,170 L108,155 L92,155 Z M45,95 L45,105 L60,108 L60,92 Z M155,95 L155,105 L140,108 L140,92 Z M62,62 L70,70 L78,58 L66,50 Z M138,138 L130,130 L122,142 L134,150 Z M138,62 L130,70 L122,58 L134,50 Z M62,138 L70,130 L78,142 L66,150 Z" fill="#A855F7"/></svg>' },
+      { id: 's31', name: 'Sun', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="30" fill="#F59E0B"/><path d="M100,20 L100,50 M100,150 L100,180 M20,100 L50,100 M150,100 L180,100 M40,40 L60,60 M140,140 L160,160 M160,40 L140,60 M60,140 L40,160" stroke="#F59E0B" stroke-width="6" stroke-linecap="round"/></svg>' },
+      { id: 's32', name: 'Moon', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M100,20 C55,20 20,55 20,100 C20,145 55,180 100,180 C110,180 120,178 130,174 C95,165 70,133 70,95 C70,57 95,25 130,16 C120,12 110,20 100,20 Z" fill="#4F46E5"/></svg>' },
+      { id: 's33', name: 'Music Note', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M80,40 L120,30 L120,130 C130,125 140,125 150,130 C160,135 165,145 165,155 C165,170 155,180 140,180 C125,180 115,170 115,155 L115,70 L80,80 Z" fill="#EC4899"/></svg>' },
+      { id: 's34', name: 'Folder', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M30,60 L30,160 L170,160 L170,80 L110,80 L90,60 Z" fill="#8B5CF6"/></svg>' },
+      { id: 's35', name: 'Document', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M60,20 L120,20 L140,40 L140,180 L60,180 Z M120,20 L120,40 L140,40" fill="#14B8A6" stroke="#14B8A6" stroke-width="2" stroke-linejoin="round"/></svg>' },
+      { id: 's36', name: 'Camera', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="30" y="70" width="140" height="90" rx="10" fill="#0EA5E9"/><path d="M70,50 L90,70 L110,70 L130,50 Z" fill="#0EA5E9"/><circle cx="100" cy="115" r="25" fill="#1e1e1e"/></svg>' },
+      { id: 's37', name: 'Gift Box', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="50" y="90" width="100" height="80" fill="#10B981"/><rect x="40" y="70" width="120" height="25" rx="5" fill="#10B981"/><path d="M100,45 Q85,45 85,60 L100,70 L115,60 Q115,45 100,45 M100,70 L100,170" stroke="#065f46" stroke-width="8"/></svg>' },
+      { id: 's38', name: 'Trophy', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M70,40 L70,80 C70,110 85,125 100,125 C115,125 130,110 130,80 L130,40 Z M50,40 L70,40 L70,65 C60,65 50,55 50,40 Z M130,40 L150,40 C150,55 140,65 130,65 Z M90,125 L90,145 L70,145 L70,160 L130,160 L130,145 L110,145 L110,125" fill="#F59E0B"/></svg>' },
+      { id: 's39', name: 'Key', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="60" cy="100" r="35" fill="#06B6D4"/><rect x="90" y="90" width="90" height="20" rx="5" fill="#06B6D4"/><rect x="140" y="75" width="10" height="15" fill="#06B6D4"/><rect x="160" y="75" width="10" height="15" fill="#06B6D4"/></svg>' },
+      { id: 's40', name: 'Lock', cat: 'shapes', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="60" y="100" width="80" height="70" rx="8" fill="#EF4444"/><path d="M75,100 L75,70 C75,56 86,45 100,45 C114,45 125,56 125,70 L125,100" stroke="#EF4444" stroke-width="12" fill="none"/><circle cx="100" cy="135" r="8" fill="#1e1e1e"/></svg>' },
+
+      // Dividers (8)
+      { id: 'd1', name: 'Zigzag', cat: 'dividers', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 100"><polyline points="0,50 100,20 200,50 300,20 400,50 500,20 600,50 700,20 800,50" stroke="#4F46E5" stroke-width="3" fill="none"/></svg>' },
+      { id: 'd2', name: 'Dotted Line', cat: 'dividers', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 100"><line x1="0" y1="50" x2="800" y2="50" stroke="#EC4899" stroke-width="2" stroke-dasharray="5,10"/></svg>' },
+      { id: 'd3', name: 'Wave Divider', cat: 'dividers', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 100"><path d="M0,50 Q200,20 400,50 T800,50" stroke="#8B5CF6" stroke-width="3" fill="none"/></svg>' },
+      { id: 'd4', name: 'Dashed Line', cat: 'dividers', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 100"><line x1="0" y1="50" x2="800" y2="50" stroke="#14B8A6" stroke-width="2" stroke-dasharray="20,10"/></svg>' },
+      { id: 'd5', name: 'Double Line', cat: 'dividers', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 100"><line x1="0" y1="40" x2="800" y2="40" stroke="#F59E0B" stroke-width="2"/><line x1="0" y1="60" x2="800" y2="60" stroke="#F59E0B" stroke-width="2"/></svg>' },
+      { id: 'd6', name: 'Fade Line', cat: 'dividers', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 100"><defs><linearGradient id="fade"><stop offset="0%" stop-opacity="0"/><stop offset="50%" stop-opacity="1"/><stop offset="100%" stop-opacity="0"/></linearGradient></defs><line x1="0" y1="50" x2="800" y2="50" stroke="url(#fade)" stroke-width="2" stroke="#0EA5E9"/></svg>' },
+      { id: 'd7', name: 'Arrow Line', cat: 'dividers', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 100"><line x1="0" y1="50" x2="750" y2="50" stroke="#10B981" stroke-width="2"/><polygon points="750,40 780,50 750,60" fill="#10B981"/></svg>' },
+      { id: 'd8', name: 'Bracket Line', cat: 'dividers', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 100"><path d="M50,30 L50,50 L750,50 L750,70" stroke="#06B6D4" stroke-width="2" fill="none"/></svg>' },
+
+      // Frames (6)
+      { id: 'f1', name: 'Simple Frame', cat: 'frames', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="20" y="20" width="160" height="160" fill="none" stroke="#4F46E5" stroke-width="4"/></svg>' },
+      { id: 'f2', name: 'Rounded Frame', cat: 'frames', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="20" y="20" width="160" height="160" rx="20" fill="none" stroke="#EC4899" stroke-width="4"/></svg>' },
+      { id: 'f3', name: 'Circle Frame', cat: 'frames', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" fill="none" stroke="#8B5CF6" stroke-width="4"/></svg>' },
+      { id: 'f4', name: 'Double Frame', cat: 'frames', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="20" y="20" width="160" height="160" fill="none" stroke="#14B8A6" stroke-width="2"/><rect x="30" y="30" width="140" height="140" fill="none" stroke="#14B8A6" stroke-width="2"/></svg>' },
+      { id: 'f5', name: 'Dashed Frame', cat: 'frames', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="20" y="20" width="160" height="160" fill="none" stroke="#F59E0B" stroke-width="3" stroke-dasharray="10,5"/></svg>' },
+      { id: 'f6', name: 'Corner Frame', cat: 'frames', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M20,20 L20,60 M20,20 L60,20 M180,20 L140,20 M180,20 L180,60 M20,180 L20,140 M20,180 L60,180 M180,180 L180,140 M180,180 L140,180" stroke="#0EA5E9" stroke-width="4" stroke-linecap="round"/></svg>' },
+
+      // Borders (6)
+      { id: 'br1', name: 'Solid Border', cat: 'borders', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="10" y="10" width="180" height="180" fill="none" stroke="#4F46E5" stroke-width="6"/></svg>' },
+      { id: 'br2', name: 'Dotted Border', cat: 'borders', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="10" y="10" width="180" height="180" fill="none" stroke="#EC4899" stroke-width="4" stroke-dasharray="2,6"/></svg>' },
+      { id: 'br3', name: 'Dashed Border', cat: 'borders', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="10" y="10" width="180" height="180" fill="none" stroke="#8B5CF6" stroke-width="4" stroke-dasharray="15,8"/></svg>' },
+      { id: 'br4', name: 'Round Border', cat: 'borders', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="10" y="10" width="180" height="180" rx="30" fill="none" stroke="#14B8A6" stroke-width="5"/></svg>' },
+      { id: 'br5', name: 'Thick Border', cat: 'borders', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="10" y="10" width="180" height="180" fill="none" stroke="#F59E0B" stroke-width="10"/></svg>' },
+      { id: 'br6', name: 'Double Border', cat: 'borders', svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="10" y="10" width="180" height="180" fill="none" stroke="#0EA5E9" stroke-width="2"/><rect x="20" y="20" width="160" height="160" fill="none" stroke="#0EA5E9" stroke-width="2"/></svg>' }
+    ];
+
+    var currentCat = 'all';
+    var currentSearch = '';
+
+    function render() {
+      var filtered = ASSETS.filter(function(a) {
+        var matchCat = currentCat === 'all' || a.cat === currentCat;
+        var matchSearch = a.name.toLowerCase().includes(currentSearch.toLowerCase());
+        return matchCat && matchSearch;
+      });
+
+      var grid = document.getElementById('grid');
+      var empty = document.getElementById('empty');
+      var countLabel = document.getElementById('count-label');
+
+      grid.innerHTML = '';
+
+      if (filtered.length === 0) {
+        grid.style.display = 'none';
+        empty.style.display = 'flex';
+        countLabel.textContent = 'No assets';
+      } else {
+        grid.style.display = 'grid';
+        empty.style.display = 'none';
+        countLabel.textContent = filtered.length + ' asset' + (filtered.length === 1 ? '' : 's');
+
+        filtered.forEach(function(asset) {
+          var card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = '<div class="card-preview">' + asset.svg + '</div>' +
+            '<div class="card-name" title="' + asset.name + '">' + asset.name + '</div>' +
+            '<button class="card-insert">Insert</button>';
+
+          card.querySelector('.card-insert').addEventListener('click', function(e) {
+            e.stopPropagation();
+            parent.postMessage({ pluginMessage: { type: 'insert', svg: asset.svg, name: asset.name } }, '*');
+            showToast('Inserted ' + asset.name);
+          });
+
+          grid.appendChild(card);
+        });
+      }
+    }
+
+    function showToast(msg, isError) {
+      var toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = 'toast' + (isError ? ' error' : '');
+      setTimeout(function() { toast.classList.add('show'); }, 10);
+      setTimeout(function() { toast.classList.remove('show'); }, 2000);
+    }
+
+    document.getElementById('search').addEventListener('input', function(e) {
+      currentSearch = e.target.value;
+      render();
+    });
+
+    document.getElementById('sidebar').addEventListener('click', function(e) {
+      var item = e.target.closest('.cat-item');
+      if (!item) return;
+
+      document.querySelectorAll('.cat-item').forEach(function(el) { el.classList.remove('active'); });
+      item.classList.add('active');
+
+      currentCat = item.getAttribute('data-cat');
+      render();
+    });
+
+    render();
+  </script>
+</body>
+
+</html>
