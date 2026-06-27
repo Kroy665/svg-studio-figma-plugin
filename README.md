@@ -1,9 +1,9 @@
-# SVG Studio v0.0.3 - Figma Plugin with Database
+# SVG Studio v0.0.4 - Figma Plugin with Database
 
 Production-grade Figma plugin for managing and inserting SVG assets with **Prisma ORM** and **SQLite database**.
 
-> **Version**: 0.0.3
-> **Status**: Beta - Fully Functional with Bug Fixes
+> **Version**: 0.0.4
+> **Status**: Beta - Ready for Non-Developers
 
 ## ✨ Features
 
@@ -51,6 +51,11 @@ Figma_plugin/
 ```
 
 ## 🚀 Quick Start
+
+### For Non-Developers
+**See [`START_HERE.md`](START_HERE.md)** for simple double-click setup!
+
+### For Developers
 
 ### 1. Clone & Install
 
@@ -210,7 +215,7 @@ ALLOWED_ORIGINS=http://localhost:*,https://www.figma.com
 LOG_LEVEL=info
 ```
 
-## 🚧 Version 0.0.3 Status
+## 🚧 Version 0.0.4 Status
 
 ### ✅ Completed
 - [x] SQLite database with Prisma ORM
@@ -291,7 +296,13 @@ MIT
 
 ## 📦 Version History
 
-### v0.0.3 (Current) - Bug Fixes
+### v0.0.4 (Current) - User-Friendly Setup
+- ✅ One-click setup scripts for Mac and Windows
+- ✅ Simple documentation for non-developers
+- ✅ No terminal commands needed
+- ✅ Double-click to start server
+
+### v0.0.3 - Bug Fixes
 - ✅ Fixed CORS configuration for Figma plugin
 - ✅ Fixed search functionality (SQLite compatibility)
 - ✅ Fixed manifest network access configuration

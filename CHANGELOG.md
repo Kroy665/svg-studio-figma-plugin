@@ -70,6 +70,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Why**: Local-only app - each machine generates its own database
 - **Setup**: Run `npm run db:migrate && npm run db:seed` on new machine
 
+## [0.0.4] - 2026-06-27
+
+### Added
+- **User-Friendly Setup Scripts**: One-click setup for non-developers
+  - `setup.sh` / `setup.bat` - Automated setup for Mac/Windows
+  - `start-server.command` / `start-server.bat` - Easy server start
+- **Documentation for Non-Developers**:
+  - `START_HERE.md` - Simple 3-step quick start guide
+  - `INSTRUCTIONS_FOR_USERS.md` - Comprehensive user manual with troubleshooting
+
+### Improved
+- No terminal commands needed for setup or daily use
+- Double-click scripts for all operations
+- Clear step-by-step instructions for non-technical users
+
 ## [0.0.3] - 2026-06-27
 
 ### Fixed
