@@ -20,6 +20,14 @@ echo [OK] Node.js found
 node -v
 echo.
 
+REM Create .env file if it doesn't exist
+if not exist .env (
+    echo Creating .env file...
+    copy .env.example .env >nul
+    echo [OK] .env file created
+    echo.
+)
+
 REM Install dependencies
 echo Installing dependencies...
 call npm install

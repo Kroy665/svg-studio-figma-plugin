@@ -17,6 +17,14 @@ fi
 echo "✅ Node.js found: $(node -v)"
 echo ""
 
+# Create .env file if it doesn't exist
+if [ ! -f .env ]; then
+    echo "⚙️  Creating .env file..."
+    cp .env.example .env
+    echo "✅ .env file created"
+    echo ""
+fi
+
 # Install dependencies
 echo "📦 Installing dependencies..."
 npm install
