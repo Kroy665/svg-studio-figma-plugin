@@ -1,23 +1,7 @@
 const { PrismaClient } = require('../generated/prisma');
-const fs = require('fs');
-const path = require('path');
+const SHAPES_DATA = require('./shapes-data');
 
 const prisma = new PrismaClient();
-
-// Read and parse ASSETS from ui.html
-function extractAssetsFromUI() {
-  const uiPath = path.join(__dirname, '../ui.html');
-  const uiContent = fs.readFileSync(uiPath, 'utf8');
-
-  const assetsMatch = uiContent.match(/var ASSETS = \[([\s\S]*?)\];/);
-
-  if (!assetsMatch) {
-    throw new Error('Could not find ASSETS array in ui.html');
-  }
-
-  const assetsCode = `[${assetsMatch[1]}]`;
-  return eval(assetsCode);
-}
 
 // Helper to extract dimensions
 function extractDimensions(svg) {
@@ -81,9 +65,9 @@ async function main() {
   }
   console.log(`✓ Created ${settings.length} settings\n`);
 
-  // Migrate shapes from ui.html
-  console.log('Migrating shapes from ui.html...');
-  const ASSETS = extractAssetsFromUI();
+  // Create shapes from data file
+  console.log('Creating shapes...');
+  const ASSETS = SHAPES_DATA;
 
   let successCount = 0;
   let errorCount = 0;
